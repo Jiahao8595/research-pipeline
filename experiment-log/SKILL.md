@@ -96,14 +96,36 @@ wiki/实验日志/                              ← 标准层（产出）
 
 按实际设备扩展。
 
-## 标准日志模板
+## Obsidian 集成
 
-所有日志使用 YAML frontmatter + Markdown 正文。模板分两部分：
+本 skill 设计为与 [Obsidian](https://obsidian.md) vault 配合使用。Obsidian 是一个基于本地 Markdown 文件的笔记系统，配合 [Dataview](https://github.com/blacksmithgu/obsidian-dataview) 插件可实现实验数据的动态查询和仪表盘。
 
-1. **YAML 头部** — 结构化数据，dataview 可查询
-2. **正文** — 自由文本：实验目的、操作步骤、观察、结果、异常
+**为什么用 Obsidian：**
+- 所有日志为纯文本 Markdown，可版本控制、可全文搜索
+- YAML frontmatter 结构使 dataview 可自动生成实验列表、异常汇总、设备使用记录
+- 本地存储，无云依赖性，数据安全
 
-具体模板见 `references/example-log.md`，包含一个通用腐蚀实验的完整示例。
+**安装 skill 后需在 vault 中创建以下文件：**
+
+| 文件 | 模板 | 用途 |
+|------|------|------|
+| `实验日志/实验索引.md` | `templates/experiment-index.md` | Dataview 查询仪表盘 |
+| `实验日志/异常记录.md` | `templates/anomaly-log.md` | 异常记录 |
+| `实验日志/公共/设备与试剂追踪.md` | `templates/equipment-tracking.md` | 设备与试剂追踪 |
+
+将模板文件复制到你的 Obsidian vault 对应位置即可使用。
+
+## 参考示例
+
+`references/` 目录包含三个完整的实验日志示例，覆盖常见实验类型：
+
+| 文件 | 实验类型 |
+|------|---------|
+| `references/example-log.md` | 材料腐蚀浸泡实验 |
+| `references/example-electrochemical.md` | 电化学表征（CV 窗口测试） |
+| `references/example-thermal-stability.md` | 热稳定性实验 |
+
+每个示例均包含完整的 YAML frontmatter 和 Markdown 正文，可直接作为模板修改使用。
 
 ## 飞书 CLI 操作要点
 
