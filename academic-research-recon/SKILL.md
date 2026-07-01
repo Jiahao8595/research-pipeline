@@ -189,3 +189,7 @@ Avoid overclaiming advisor relationships unless a CV, thesis record, institution
 - [ ] Name variants and possible ambiguity are noted.
 - [ ] Key publications include DOI/title/year when available.
 - [ ] The final summary explains why the network matters for the user's research path.
+
+## Obsidian Integration
+
+Optionally works with an [Obsidian](https://obsidian.md) vault. Investigator profiles and institutional maps can be saved as structured notes for future reference. Use the `obsidian` skill to create and link notes within your research knowledge base.

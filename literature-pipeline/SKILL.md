@@ -1,5 +1,5 @@
 ---
-name: nature-literature-pipeline
+name: literature-pipeline
 description: |
   Complete automated literature discovery pipeline: multi-source search → six-dimension scoring → fine reading → formatted delivery → archival.
   Combines a configurable engine with daily cron-driven application layer. Works with Feishu, Telegram, or any messaging platform.
@@ -9,10 +9,10 @@ license: MIT
 metadata:
   hermes:
     tags: [research, literature, pipeline, cron, automation, discovery]
-    related_skills: [nature-academic-search, nature-citation, arxiv, zotero]
+    related_skills: [arxiv, zotero-management, obsidian]
 ---
 
-# Nature Literature Pipeline
+# Literature Pipeline
 
 A complete, production-tested automated literature pipeline. Not just "search for papers" — it's a structured engine that scores, classifies, reads, delivers, and archives research papers daily.
 
@@ -88,10 +88,22 @@ A config template is provided in `templates/literature-push-template.md`.
 
 ## Related Skills
 
-- `nature-academic-search` — ad-hoc literature search (complementary; this skill adds structured daily automation)
-- `nature-citation` — CNS citation export (for importing pipeline discoveries into manuscripts)
-- `zotero` — library management (for long-term organization of pipeline outputs)
 - `arxiv` — arXiv API (used as a search source)
+- `zotero-management` — library management (for long-term organization of pipeline outputs)
+- `obsidian` — vault for storing literature notes and maintaining a research knowledge base
+
+## Obsidian Integration
+
+This skill is designed to work with an [Obsidian](https://obsidian.md) vault. The archive stage writes structured notes with YAML frontmatter that can be queried with the [Dataview](https://github.com/blacksmithgu/obsidian-dataview) plugin.
+
+**Recommended vault structure:**
+```
+vault/
+├── raw/literature/          ← Pipeline writes here (auto-generated)
+└── wiki/                    ← Your curated knowledge base (manual)
+```
+
+The pipeline writes to `raw/` only — it never modifies `wiki/`. This separation keeps your curated knowledge safe while the automation handles discovery and initial classification.
 
 ## References
 

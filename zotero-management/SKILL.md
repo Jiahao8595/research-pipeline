@@ -6,7 +6,7 @@ author: 十五
 metadata:
   hermes:
     tags: [research, zotero, literature, library-management]
-    related_skills: [literature-pipeline, wenxian-tuisong, obsidian]
+    related_skills: [literature-pipeline, obsidian]
 ---
 
 # Zotero Library Management
@@ -30,8 +30,8 @@ Located in `~/.hermes/config.yaml` under `mcp_servers.zotero.env`:
 import yaml
 cfg = yaml.safe_load(open('~/.hermes/config.yaml'))
 env = cfg['mcp_servers']['zotero']['env']
-API_KEY = env['ZOTERO_API_KEY']      # 22-char string
-USER_ID = env['ZOTERO_LIBRARY_ID']    # "20261318"
+API_KEY = env['ZOTERO_API_KEY']      # your Zotero API key (Settings → Feeds/API)
+USER_ID = env['ZOTERO_LIBRARY_ID']   # your Zotero user/group ID
 ```
 
 Library type: `user`, name: `your-zotero-username`.
@@ -89,7 +89,7 @@ Returns `version` and `data.collections`.
 
 1. **Zotero MCP fulltext is frequently empty**: Most Zotero items lack attached PDFs. `zotero_item_fulltext` will return "no suitable attachment found" for 80%+ of papers. Always have a fallback: `web_search` + `web_extract` for abstract/content retrieval. PDFs that exist locally may need `lit parse` (LiteParse) for extraction.
 2. **MCP is read-only for items**: Zotero MCP only supports search/metadata/fulltext reads. It cannot add items, create collections, move items, or modify metadata. Collection operations require REST API curl calls.
-3. **Zotero collection structure ≠ vault A-E classification**: JL's Zotero has 8 subcollections organized by topic (reference-electrodes, electrochemical-methods, etc.), while the vault uses A-E tiers (A_核心主线 through E_暂存低优先). These are independent systems — paper classification in Zotero does not automatically map to vault classification. When migrating papers, re-classify based on content relevance to JL's current research direction, not the Zotero collection name.
+3. **Zotero collection structure ≠ vault classification**: Your Zotero may use topic-based subcollections while the vault uses a different classification system (e.g., A-E tiers). These are independent — when migrating papers from Zotero to vault, re-classify based on content relevance, not collection name.
 4. **Rate limiting on writes**: Minimum 0.5s delay between PATCH/POST calls. 429 → exponential backoff. 412 → re-fetch and retry.
 5. **PDF downloads via curl may be blocked**: The Hermes approvals system may block curl-based PDF downloads from subagent contexts. Collect URLs during research and handle downloads separately.
 
@@ -97,7 +97,7 @@ Returns `version` and `data.collections`.
 
 ### Zotero → Vault Bulk Classification
 
-When JL asks to read and classify a large batch of Zotero papers (50-100) into the vault A-E tier system: the full workflow is documented in the `literature-pipeline` skill's `references/bulk-classification.md`. Key steps:
+When the user asks to read and classify a large batch of Zotero papers (50-100) into the vault classification system: the full workflow is documented in the `literature-pipeline` skill's references. Key steps:
 
 1. Multi-query Zotero MCP search + cross-reference with existing vault notes
 2. Delegate batches of 5-9 papers to parallel subagents for reading + classification
@@ -109,7 +109,7 @@ When JL asks to read and classify a large batch of Zotero papers (50-100) into t
 The authoritative template is at `literature-pipeline` → `references/note-template.md` (v2, 2026-06-03). Covers:
 - YAML frontmatter fields: title, authors, year, journal, doi, classification, tags, date_read
 - File naming: `AuthorYear_中文关键词.md`
-- Body structure: 核心主张 → 方法 → 关键发现 → 批判 → 与JL研究的关联 → 下一步
+- Body structure: 核心主张 → 方法 → 关键发现 → 批判 → 与研究关联 → 下一步
 
 - Minimum **0.5s delay** between PATCH/POST calls
 - On HTTP 429: exponential backoff (2s, 4s, 8s)
@@ -119,7 +119,7 @@ The authoritative template is at `literature-pipeline` → `references/note-temp
 
 ## Classification Workflow
 
-When JL asks to classify/organize a Zotero collection:
+When the user asks to classify/organize a Zotero collection:
 
 1. **Fetch all items** from the collection via REST API, save to `/tmp/zotero_items.json`
 2. **Analyze** titles + tags: extract natural clusters, propose classification scheme (5-10 categories)
@@ -149,12 +149,17 @@ Installed via `uv tool install liteparse` (v2.0.4). Supports PDF, DOCX, XLSX, PP
 
 For visual content (figures, graphs, tables), pair with vision model: `lit screenshot` → `vision_analyze`.
 
-## JL's Library
+## Your Library
 
 | Field | Value |
 |-------|-------|
-| Library ID | 20261318 |
-| Type | user |
-| Username | your-zotero-username |
-| Main collection | `molten_salt_review_references` (3EHLIVNC, 92 items) |
-| Subcollections | 01_topic-a (XXXXXX), 02_topic-b (XXXXXX), 03_topic-c (XXXXXX), ... |
+| Library ID | numeric ID (found in Zotero Settings → Feeds/API) |
+| Type | user or group |
+| Username | your Zotero account username |
+| Main collection | your primary research collection |
+
+## Obsidian Integration
+
+This skill works with the [Obsidian](https://obsidian.md) vault managed by `literature-pipeline`. After classifying papers through this skill, the literature pipeline's note template ensures consistent YAML frontmatter for Dataview queries.
+
+The vault stores literature notes at `raw/literature/` with standardized formats that can be queried across your research knowledge base.
